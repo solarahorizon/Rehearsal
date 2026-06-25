@@ -1,7 +1,7 @@
 // TestModeConfig.swift
-// Mode B — state-seeding seam. Parses launch arguments into typed test flags.
-// The WHOLE type is wrapped in #if DEBUG so it physically cannot ship in a
-// Release build. See Docs/STATE_SEEDING_PATTERN.md.
+// The launch-arg seam. Parses launch arguments into typed test flags. The WHOLE
+// type is wrapped in #if DEBUG so it physically cannot ship in a Release build.
+// See Docs/STATE_SEEDING_PATTERN.md.
 #if DEBUG
 import Foundation
 
@@ -15,6 +15,11 @@ enum TestModeConfig {
     static var startState: DemoState? {
         value(for: "--start-at").flatMap(DemoState.init(rawValue:))
     }
+
+    /// `--reduce-motion` → freeze the continuous backdrop animation. UI tests pass
+    /// this so the app can go "idle" between steps (XCUITest waits for idle; a
+    /// never-ending animation would otherwise hang the test).
+    static var reduceMotion: Bool { args.contains("--reduce-motion") }
 
     /// Shared parser for `--flag=value` payloads (per STATE_SEEDING_PATTERN.md §3).
     private static func value(for flag: String) -> String? {

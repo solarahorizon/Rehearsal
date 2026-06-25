@@ -2,7 +2,8 @@
 // Two runnable, green UI tests that drive the demo through Rehearsal's SHIPPED
 // helpers (Sources/Helpers/XCUIApplication+Helpers.swift, referenced by
 // project.yml — not copied). Both reach the SAME "Demo Success!" screen — one by
-// tapping, one by SEEDING straight to it — which is the whole point of Mode B.
+// tapping, one by SEEDING straight to it — and both freeze the app's continuous
+// animation via the seam (`--reduce-motion`) so the run is deterministic.
 import XCTest
 
 final class RehearsalDemoUITests: XCTestCase {
@@ -11,10 +12,10 @@ final class RehearsalDemoUITests: XCTestCase {
         continueAfterFailure = false
     }
 
-    /// The journey: default launch → "Hello" → tap → "Demo Success!".
+    /// The journey: launch → "Hello" → tap → "Demo Success!".
     func test_tapHello_revealsSuccess() throws {
         let app = XCUIApplication()
-        app.launch()
+        app.launchForUITest()
 
         app.assertVisible(id: "demo.hello.tap.button")
         app.tapButton(id: "demo.hello.tap.button")
@@ -26,7 +27,7 @@ final class RehearsalDemoUITests: XCTestCase {
     /// told it where to start. The test never touches Hello.
     func test_seededStart_landsOnSuccess() throws {
         let app = XCUIApplication()
-        app.launchAtSuccess()   // named preset → --start-at=success
+        app.launchAtSuccess()
 
         app.assertVisible(id: "demo.success.title.label")
         app.assertNotVisible(id: "demo.hello.tap.button")

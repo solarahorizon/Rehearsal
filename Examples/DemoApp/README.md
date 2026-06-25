@@ -30,10 +30,11 @@ Expect `** TEST SUCCEEDED **` (2 tests).
 - **The shipped helpers drive the test.** The UI-test target *references the real*
   `Sources/Helpers/XCUIApplication+Helpers.swift` (via `project.yml`), not a copy — so a
   green run validates the actual helper file, with no drift.
-- **Test-safe animations.** The ripple + rainbow "Demo Success!" are deliberately
-  *finite* (no `.repeatForever`) — a never-ending animation stops the app going
-  "idle", and XCUITest waits for idle before every step, so it would hang. A real
-  gotcha, baked into the demo.
+- **Animating apps under test (a real gotcha).** The backdrop runs a *continuous*
+  neon animation (a 360° rotation + a breathing zoom). A never-ending animation stops
+  the app going "idle", and XCUITest waits for idle before every step — so it would
+  hang. The fix is the seam: both tests pass `--reduce-motion`, which freezes the
+  motion. Beautiful in normal use, deterministic under test — demonstrated end-to-end.
 
 ## The two tests
 
@@ -42,8 +43,11 @@ straight to it*. That contrast is Mode B in a nutshell.
 
 | Test | Shows |
 |---|---|
-| `test_tapHello_revealsSuccess` | the journey — default launch → "Hello" → `tapButton` → "Demo Success!" (`assertVisible`) |
+| `test_tapHello_revealsSuccess` | the journey — launch → "Hello" → `tapButton` → "Demo Success!" (`assertVisible`) |
 | `test_seededStart_landsOnSuccess` | the shortcut — `--start-at=success` boots straight to "Demo Success!", **no tap** (state-seeding) |
+
+Both presets also pass `--reduce-motion`, freezing the continuous backdrop so the
+run stays idle-able (see "Animating apps under test" above).
 
 This demo is **Mode B** (offline / local-state). For a network app, the **Mode A**
 service-mock seam is in [`../../Docs/MOCK_SERVICE_PATTERN.md`](../../Docs/MOCK_SERVICE_PATTERN.md).
