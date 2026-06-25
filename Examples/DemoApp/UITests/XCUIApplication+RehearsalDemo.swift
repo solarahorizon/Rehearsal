@@ -1,0 +1,14 @@
+// XCUIApplication+RehearsalDemo.swift
+// Page-Object presets for the demo. Each meaningful starting state is wrapped in
+// a named launch that composes the shipped `launchWithMockMode(args:)` helper, so
+// tests read like prose instead of scattering raw argument arrays
+// (per Docs/STATE_SEEDING_PATTERN.md §5). This is the per-project file CHECKLIST.md
+// §3 has you create alongside the generic helpers.
+import XCTest
+
+extension XCUIApplication {
+    /// Skip onboarding and seed the counter to a known starting value.
+    func launchSeededCounter(_ start: Int) {
+        launchWithMockMode(args: ["--skip-onboarding", "--seed-count=\(start)"])
+    }
+}

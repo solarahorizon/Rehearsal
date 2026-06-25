@@ -1,0 +1,49 @@
+# XcodeGen spec for the Rehearsal runnable demo.
+# Generate the project with:  xcodegen generate   (the .xcodeproj is gitignored)
+name: RehearsalDemo
+options:
+  bundleIdPrefix: com.solarahorizon.rehearsaldemo
+  deploymentTarget:
+    iOS: "17.0"
+  createIntermediateGroups: true
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    TARGETED_DEVICE_FAMILY: "1,2"
+targets:
+  RehearsalDemo:
+    type: application
+    platform: iOS
+    sources:
+      - App
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+        PRODUCT_BUNDLE_IDENTIFIER: com.solarahorizon.rehearsaldemo
+        INFOPLIST_KEY_UILaunchScreen_Generation: YES
+  RehearsalDemoUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources:
+      - UITests
+      # The REAL shipped helper — referenced, not copied, so a green run proves
+      # the actual file in Sources/Helpers works (no drift).
+      - path: ../../Sources/Helpers/XCUIApplication+Helpers.swift
+        group: Rehearsal (shipped helper)
+    dependencies:
+      - target: RehearsalDemo
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+        USES_XCTRUNNER: YES   # per CONVENTIONS.md §5 (XcodeGen infers it, set explicitly so the demo models the checklist)
+        PRODUCT_BUNDLE_IDENTIFIER: com.solarahorizon.rehearsaldemo.uitests
+        TEST_TARGET_NAME: RehearsalDemo
+schemes:
+  RehearsalDemo:
+    build:
+      targets:
+        RehearsalDemo: all
+        RehearsalDemoUITests: [test]
+    test:
+      targets:
+        - RehearsalDemoUITests
