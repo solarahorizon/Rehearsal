@@ -169,8 +169,9 @@ same seed and asserting identical outcomes.
 
 [`Examples/DemoApp/`](../Examples/DemoApp/) ("RehearsalDemo", offline SwiftUI)
 uses Mode B exclusively — it makes no network calls, so there is nothing to
-mock. It's a real, runnable example: `xcodegen generate && xcodebuild test`
-boots a simulator and passes green UI tests that drive the shipped helpers.
+mock. It's a real, runnable example: run `xcodegen generate`, then ⌘U in Xcode
+(or the `xcodebuild test` command in its [README](../Examples/DemoApp/README.md)),
+and green UI tests drive the shipped helpers.
 
 Its `TestModeConfig` (whole enum `#if DEBUG`) parses a small family of flags;
 the same shape extends to whatever starting states your own app needs:

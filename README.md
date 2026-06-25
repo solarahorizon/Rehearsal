@@ -16,7 +16,7 @@ test in about a day on an app with a compatible seam — larger migrations vary.
 > different shapes*, not extracted once. Every issue those later adoptions hit is
 > written up in [`Docs/TROUBLESHOOTING.md`](Docs/TROUBLESHOOTING.md).
 
-> **▶ See it run first.** [`Examples/DemoApp/`](Examples/DemoApp/) is a **runnable demo** — `xcodegen generate && xcodebuild test` boots a simulator and passes **two green UI tests** that drive the real helper file (not a copy). The fastest way to see what adoption looks like before you touch your own app.
+> **▶ See it run first.** [`Examples/DemoApp/`](Examples/DemoApp/) is a **runnable demo** — `xcodegen generate`, then run it (⌘U in Xcode, or the one `xcodebuild test` command in the [demo README](Examples/DemoApp/README.md)) — and watch **two green UI tests** drive the real helper file (not a copy). The fastest way to see what adoption looks like before you touch your own app.
 
 <sub>Looking for "Playwright for iOS" / a "Maestro / Detox alternative" / a Cypress-style flow for SwiftUI? Same idea, implemented as plain XCUITest — no extra runtime or runner.</sub>
 
