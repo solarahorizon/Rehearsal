@@ -1,8 +1,8 @@
 // RehearsalDemoUITests.swift
-// A runnable, green UI test that drives the demo app through Rehearsal's SHIPPED
-// helpers (Sources/Helpers/XCUIApplication+Helpers.swift, referenced by project.yml
-// — not copied). A passing run proves the real helpers work. Launches go through
-// the named presets in XCUIApplication+RehearsalDemo.swift, per the docs.
+// Two runnable, green UI tests that drive the demo through Rehearsal's SHIPPED
+// helpers (Sources/Helpers/XCUIApplication+Helpers.swift, referenced by
+// project.yml — not copied). Both reach the SAME "Demo Success!" screen — one by
+// tapping, one by SEEDING straight to it — which is the whole point of Mode B.
 import XCTest
 
 final class RehearsalDemoUITests: XCTestCase {
@@ -11,28 +11,24 @@ final class RehearsalDemoUITests: XCTestCase {
         continueAfterFailure = false
     }
 
-    /// State-seeding (Mode B): launch straight onto the counter, seeded to 5,
-    /// then increment — deterministic, no network.
-    func test_seededCounter_incrementsFromSeed() throws {
-        let app = XCUIApplication()
-        app.launchSeededCounter(5)   // named preset → --skip-onboarding --seed-count=5
-
-        app.assertText(id: "demo.counter.value.label", matches: "5")
-        app.tapButton(id: "demo.counter.increment.button")
-        app.assertText(id: "demo.counter.value.label", matches: "6")
-    }
-
-    /// Default path: no seam flags → plain `launch()`. (The shipped
-    /// `launchWithMockMode` requires at least one flag by design, so the
-    /// production/default path uses the standard launch.) Onboarding shows;
-    /// "Get Started" navigates to a fresh (zero) counter.
-    func test_onboarding_navigatesToCounter() throws {
+    /// The journey: default launch → "Hello" → tap → "Demo Success!".
+    func test_tapHello_revealsSuccess() throws {
         let app = XCUIApplication()
         app.launch()
 
-        app.assertVisible(id: "demo.onboarding.start.button")
-        app.tapButton(id: "demo.onboarding.start.button")
-        app.assertVisible(id: "demo.counter.value.label")
-        app.assertText(id: "demo.counter.value.label", matches: "0")
+        app.assertVisible(id: "demo.hello.tap.button")
+        app.tapButton(id: "demo.hello.tap.button")
+        app.assertVisible(id: "demo.success.title.label")
+    }
+
+    /// The shortcut (Mode B state-seeding): launch SEEDED straight to success —
+    /// the app boots on "Demo Success!" with no tap, because one launch argument
+    /// told it where to start. The test never touches Hello.
+    func test_seededStart_landsOnSuccess() throws {
+        let app = XCUIApplication()
+        app.launchAtSuccess()   // named preset → --start-at=success
+
+        app.assertVisible(id: "demo.success.title.label")
+        app.assertNotVisible(id: "demo.hello.tap.button")
     }
 }

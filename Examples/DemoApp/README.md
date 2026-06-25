@@ -24,18 +24,26 @@ Expect `** TEST SUCCEEDED **` (2 tests).
 
 ## What it demonstrates
 - **The launch-arg seam (Mode B — state-seeding).** `App/TestModeConfig.swift` parses
-  `--skip-onboarding` and `--seed-count=<n>` into typed flags, whole type `#if DEBUG`
-  so it can't ship in Release. The seam is applied in `RootView.init()`.
-- **The 4-segment accessibility-id convention** (`<app>.<feature>.<element>.<state>`, e.g. `demo.counter.value.label`) — see the views.
+  `--start-at=<state>` into a typed flag, whole type `#if DEBUG` so it can't ship in
+  Release. The seam is read in `App.init()`, before the view tree binds.
+- **The 4-segment accessibility-id convention** (`<app>.<feature>.<element>.<state>`, e.g. `demo.hello.tap.button`, `demo.success.title.label`) — see the views.
 - **The shipped helpers drive the test.** The UI-test target *references the real*
   `Sources/Helpers/XCUIApplication+Helpers.swift` (via `project.yml`), not a copy — so a
   green run validates the actual helper file, with no drift.
+- **Test-safe animations.** The ripple + rainbow "Demo Success!" are deliberately
+  *finite* (no `.repeatForever`) — a never-ending animation stops the app going
+  "idle", and XCUITest waits for idle before every step, so it would hang. A real
+  gotcha, baked into the demo.
 
 ## The two tests
+
+Both reach the **same** "Demo Success!" screen — one by tapping, one by *seeding
+straight to it*. That contrast is Mode B in a nutshell.
+
 | Test | Shows |
 |---|---|
-| `test_seededCounter_incrementsFromSeed` | seed state deterministically (`--seed-count=5`), then `tapButton`/`assertText` |
-| `test_onboarding_navigatesToCounter` | default launch (no flags) → `assertVisible`/`tapButton` navigation |
+| `test_tapHello_revealsSuccess` | the journey — default launch → "Hello" → `tapButton` → "Demo Success!" (`assertVisible`) |
+| `test_seededStart_landsOnSuccess` | the shortcut — `--start-at=success` boots straight to "Demo Success!", **no tap** (state-seeding) |
 
 This demo is **Mode B** (offline / local-state). For a network app, the **Mode A**
 service-mock seam is in [`../../Docs/MOCK_SERVICE_PATTERN.md`](../../Docs/MOCK_SERVICE_PATTERN.md).

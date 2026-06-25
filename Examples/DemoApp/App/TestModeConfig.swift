@@ -8,11 +8,13 @@ import Foundation
 enum TestModeConfig {
     private static let args = ProcessInfo.processInfo.arguments
 
-    /// `--skip-onboarding` → start on the counter, not the onboarding screen.
-    static var skipOnboarding: Bool { args.contains("--skip-onboarding") }
-
-    /// `--seed-count=<n>` → start the counter at n.
-    static var seedCount: Int? { value(for: "--seed-count").flatMap(Int.init) }
+    /// `--start-at=<state>` → boot straight to a named screen instead of the
+    /// default `.hello`. The demo uses `--start-at=success` to seed past the
+    /// greeting and land on the success screen with no tap — state-seeding in
+    /// one launch argument.
+    static var startState: DemoState? {
+        value(for: "--start-at").flatMap(DemoState.init(rawValue:))
+    }
 
     /// Shared parser for `--flag=value` payloads (per STATE_SEEDING_PATTERN.md §3).
     private static func value(for flag: String) -> String? {

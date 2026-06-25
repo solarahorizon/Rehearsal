@@ -178,16 +178,16 @@ the same shape extends to whatever starting states your own app needs:
 
 | Flag | Effect |
 |---|---|
-| `--skip-onboarding` | Skip the welcome screen, jump straight to the main screen |
-| `--seed-count=<n>` | Seed the counter to a known starting value |
+| `--start-at=<state>` | Boot straight to a named screen — the demo uses `--start-at=success` to land on "Demo Success!" with no tap |
 
 A larger app would add more flags in the same style, e.g. `--reset-state`
 (wipe SwiftData and start fresh) or `--seed-rng=<n>` (seed the process-wide
 RNG for any randomized system).
 
-The config is applied in the app's launch path before SwiftData binds, and each
-starting state is exposed as a typed preset (`launchSeededCounter(_:)`) in the
-project's Page-Object helper (`XCUIApplication+RehearsalDemo.swift`). UI tests
+The config is applied in the app's launch path (`App.init()`), before the view
+tree binds, and each starting state is exposed as a typed preset
+(`launchAtSuccess()`) in the project's Page-Object helper
+(`XCUIApplication+RehearsalDemo.swift`). UI tests
 assert on the real on-device UI produced from that seeded state — the same
 screens a real user sees.
 
