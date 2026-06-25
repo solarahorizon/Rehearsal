@@ -18,6 +18,10 @@ xcodebuild test \
 ```
 Expect `** TEST SUCCEEDED **` (2 tests).
 
+> **Running in Xcode?** Set the destination to an **iOS Simulator** (not a physical
+> device) before ⌘U. UI tests run on the simulator; a device build would ask for
+> your own signing team (`Signing for "RehearsalDemo" requires a development team`).
+
 ## What it demonstrates
 - **The launch-arg seam (Mode B — state-seeding).** `App/TestModeConfig.swift` parses
   `--skip-onboarding` and `--seed-count=<n>` into typed flags, whole type `#if DEBUG`
